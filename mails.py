@@ -8,7 +8,10 @@ pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
 
 def get_weblink(page, weblink):
     url = prefix + str((page-1)*10)
-    html = requests.request(url=url, method='GET')
+    try:
+        html = requests.request(url=url, method='GET')
+    except:
+        pass
     soup = bs4.BeautifulSoup(html.text, 'lxml')
     weblink = []
     for item in soup.find_all("a"):
@@ -20,10 +23,13 @@ def get_weblink(page, weblink):
 
 def get_mail(weblink):
     for l in weblink:
-        html = requests.request(url=l, method='GET', timeout=5)
+        try:
+            html = requests.request(url=l, method='GET', timeout=5)
+        except:
+            break
         match = re.search(pattern, html.text)
         if match:
-            f = open('mails.txt', 'w')
+            f = open('mails.txt', 'r')
             f.write(match.group()+'\n')
 
 
